@@ -86,7 +86,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean deleteUser(int id) throws UserNotFound {
-		boolean result =false;
 		try {
 			userRepo.deleteById(id);
 			return true;

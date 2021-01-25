@@ -29,45 +29,48 @@ public class UserRestController {
 	UserService userService;
 	
 	@RequestMapping(value="/create", method=RequestMethod.POST)
-	public ResponseEntity<User> createUser(@RequestBody User userObj) {
+	public ResponseEntity<User> createUser(@RequestBody User userObj) throws Exception {
 		User obj=null;
 		try{
 			obj= userService.registerUser(userObj);
 		}
-		catch(Exception e){
+		catch(Exception e){			
 			logger.error("Exception occured: "+e);
+			throw e;
 		 }
 		return new ResponseEntity<User>(obj,HttpStatus.OK);
 	}
 	
 	@RequestMapping(value="/get/{id}", method = RequestMethod.GET)
-	public ResponseEntity<User>  getUser(@PathVariable("id") int id) {
+	public ResponseEntity<User>  getUser(@PathVariable("id") int id) throws Exception {
 		User userobj=null;
 		try{
 			userobj=userService.getUser(id);
 		}
 		catch(Exception e){
 			logger.error("Exception occured: "+e);
+			throw e;
 		}
 		return new ResponseEntity<User>(userobj,HttpStatus.OK);
 				
 	}
 	
 	@RequestMapping(value="/update", method = RequestMethod.PUT)
-	public ResponseEntity<User> updateUser(@RequestBody User user){
+	public ResponseEntity<User> updateUser(@RequestBody User user) throws Exception{
 		User userobj=null;
 		try{
 			userobj=userService.updateUser(user);
 		}
 		catch(Exception e){
 			logger.error("Exception occured: "+e);
+			throw e;
 		}
 		return new ResponseEntity<User>(userobj,HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/delete/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<GenericResponce> deleteUser(@PathVariable("id") int id){
+	public ResponseEntity<GenericResponce> deleteUser(@PathVariable("id") int id) throws Exception{
 		boolean rslt=false;
 		GenericResponce responce=new GenericResponce();
 		try{
@@ -82,6 +85,7 @@ public class UserRestController {
 		}
 		catch (Exception e) {
 			logger.error("Exception occured: "+e);
+			throw e;
 		}
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);
 	}

@@ -40,7 +40,7 @@ public class LoanController {
 	LoanService loanService;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<Loan> createLoan(@RequestBody Loan loan) throws UserUnAuthorized, UserNotFound {
+	public ResponseEntity<Loan> createLoan(@RequestBody Loan loan) throws Exception  {
 		Loan loanObj = null;
 		UserD user = loginClient.getLogin(loan.getUser().getUserid());
 		try {
@@ -79,15 +79,17 @@ public class LoanController {
 			}
 		} catch (UserNotFound e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		} catch (Exception e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		}
 		return new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/updateLoan", method = RequestMethod.PUT)
-	public ResponseEntity<Loan> updateLoan(@RequestBody Loan loan) {
+	public ResponseEntity<Loan> updateLoan(@RequestBody Loan loan) throws Exception {
 		Loan loanObj = null;
 		UserD user = loginClient.getLogin(loan.getUser().getUserid());
 		try {
@@ -101,16 +103,19 @@ public class LoanController {
 			}
 		} catch (UserNotFound e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		} catch (UserUnAuthorized e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		} catch (Exception e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		}
 		return  new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/deleteLoan/{loanId}", method = RequestMethod.DELETE)
-	public  ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam int userId) {
+	public  ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam int userId)throws Exception {
 		GenericResponce responce=new GenericResponce();
 		UserD user = loginClient.getLogin(userId);
 		try {
@@ -132,10 +137,13 @@ public class LoanController {
 			}
 		} catch (UserNotFound e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		} catch (UserUnAuthorized e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		} catch (Exception e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		}
 		
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);
@@ -144,7 +152,7 @@ public class LoanController {
 	@RequestMapping(value = "/searchLoan", method = RequestMethod.GET)
 	public ResponseEntity<List<Loan>>searchLoan(@RequestParam(value = "loanNo", required = false) String loanNo,
 			@RequestParam(value = "fName", required = false) String fName,
-			@RequestParam(value = "lName", required = false) String lName) {
+			@RequestParam(value = "lName", required = false) String lName)throws Exception {
 		List<Loan> loanList = new ArrayList<>();
 		List<Loan> resultList = new ArrayList<>();		
 		try {
@@ -159,6 +167,7 @@ public class LoanController {
 			}
 		} catch (Exception e) {
 			logger.error("Exception occured:" + e);
+			throw e;
 		}
 		
 		return new ResponseEntity<List<Loan>>(resultList,HttpStatus.OK);

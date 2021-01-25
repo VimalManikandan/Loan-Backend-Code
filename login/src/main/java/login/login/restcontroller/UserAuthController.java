@@ -24,7 +24,7 @@ public class UserAuthController {
 	public static Logger logger = LoggerFactory.getLogger(UserAuthController.class);
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<GenericResponce> loginUser(@RequestBody User user) {
+	public ResponseEntity<GenericResponce> loginUser(@RequestBody User user) throws Exception {
 		GenericResponce responce=new GenericResponce();
 		
 		try {
@@ -39,12 +39,13 @@ public class UserAuthController {
 				 
 		} catch (Exception e) {
 			logger.error("Exception occcured: " + e);
+			throw e;
 		}
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public ResponseEntity<GenericResponce> logoutUser(@RequestBody User user) {
+	public ResponseEntity<GenericResponce> logoutUser(@RequestBody User user)throws Exception {
 		GenericResponce responce=new GenericResponce();
 		try {
 			if(authService.logoutUser(user)){
@@ -58,6 +59,7 @@ public class UserAuthController {
 			
 		} catch (Exception e) {
 			logger.error("Exception occcured: " + e);
+			throw e;
 			
 		}
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);		
