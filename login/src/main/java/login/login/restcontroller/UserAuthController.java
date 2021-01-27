@@ -25,8 +25,7 @@ public class UserAuthController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<GenericResponce> loginUser(@RequestBody User user) throws Exception {
-		GenericResponce responce=new GenericResponce();
-		
+		GenericResponce responce=new GenericResponce();		
 		try {
 			 if(authService.loginUser(user)){
 				 responce.setStatus(HttpStatus.OK.value());

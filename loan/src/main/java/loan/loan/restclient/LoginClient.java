@@ -14,7 +14,7 @@ import loan.loan.datamodel.UserD;
 public interface LoginClient {
 	
 	@GetMapping("/login-server/userApi/get/{id}")
-	UserD getLogin (@PathVariable("id") int id);
+	public UserD getLogin (@PathVariable("id") int id);
 	
 
 }
