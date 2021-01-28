@@ -65,7 +65,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 			logger.error("Exceprtion occured: User Not Found" );
 			throw e;
 		}
-		catch (LoanServiceException e ) {
+		catch (Exception e ) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
