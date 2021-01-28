@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import login.login.exception.UserNotFound;
@@ -25,6 +26,9 @@ public class UserAuthServiceImplTest {
 	
 	@Mock
 	UserService service;
+	
+	@InjectMocks
+	UserAuthServiceImpl serviceImpl;
 	 
 	private AutoCloseable closeable;
 	
@@ -39,15 +43,17 @@ public class UserAuthServiceImplTest {
 	@Test
 	public void testLoginUserSuccess() throws UserNotFound {
 		when(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd())).thenReturn(user);
-		assertNotNull(user);		
-		verify(userRepo,times(0)).findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
-		verify(service,times(0)).updateUser(user);
+		boolean result=	serviceImpl.loginUser(user);
+		assertTrue(result);		
+		verify(userRepo,times(1)).findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
+		verify(service,times(1)).updateUser(user);
 	}
 
-	@Test
-	public void testLoginUserFailure() {
+	@Test(expected=UserNotFound.class)
+	public void testLoginUserFailure() throws UserNotFound {
 		when(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd())).thenReturn(null);
-		assertNotNull(user);
+		boolean result=	serviceImpl.loginUser(user);
+		assertFalse(result);
 		assertNull(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd()));	
 	}
 
@@ -55,17 +61,18 @@ public class UserAuthServiceImplTest {
 	@Test
 	public void testLogoutUserSuccess() throws UserNotFound {
 		when(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd())).thenReturn(user);
-		assertNotNull(user);		
-		verify(userRepo,times(0)).findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
-		verify(service,times(0)).updateUser(user);
+		boolean result=serviceImpl.logoutUser(user);
+		assertTrue(result);	
+		verify(userRepo,times(1)).findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
+		verify(service,times(1)).updateUser(user);
 	}
 	
-	@Test
+	@Test(expected=UserNotFound.class)
 	public void testLogoutUserFailure() throws UserNotFound {
 		when(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd())).thenReturn(null);
-		assertNotNull(user);
-		assertNull(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd()));
-		
+		boolean result=serviceImpl.logoutUser(user);
+		assertFalse(result);
+		assertNull(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd()));		
 	}
 	
 	@After
