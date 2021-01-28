@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import login.login.exception.LoanServiceException;
 import login.login.exception.UserNotFound;
 import login.login.model.User;
 import login.login.repo.UserRepo;
@@ -65,6 +67,12 @@ public class UserAuthServiceImplTest {
 		assertTrue(result);	
 		verify(userRepo,times(1)).findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
 		verify(service,times(1)).updateUser(user);
+	}
+	
+	@Test(expected = LoanServiceException.class)
+	public void testLoginUserException() throws UserNotFound {
+		when(userRepo.findByUsernameAndUserpwd(user.getUsername(),user.getUserpwd())).thenThrow(LoanServiceException.class);
+		boolean result=	serviceImpl.loginUser(user);
 	}
 	
 	@Test(expected=UserNotFound.class)

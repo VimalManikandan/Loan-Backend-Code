@@ -18,8 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import loan.loan.exception.LoanNotFound;
+import loan.loan.exception.LoanServiceException;
 import loan.loan.model.Loan;
 import loan.loan.repo.LoanRepo;
+
 
 public class LoanServiceImplTest {
 
@@ -76,6 +78,12 @@ public class LoanServiceImplTest {
 		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno());
 		assertNotNull(l1);
 
+	}
+	
+	@Test(expected = LoanServiceException.class)
+	public void testLoginUserException()  {
+		when(loanRepo.findById(loan.getLoanno())).thenThrow(LoanServiceException.class);
+		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno());
 	}
 
 	@Test(expected = LoanNotFound.class)

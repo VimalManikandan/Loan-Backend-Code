@@ -29,7 +29,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 			if (u11 == null){				
 				throw new UserNotFound("User Not Found");
 			}
-			else {
+			else {			
 				u11.setLoggedin(true);
 				userService.updateUser(u11);
 				return true;
