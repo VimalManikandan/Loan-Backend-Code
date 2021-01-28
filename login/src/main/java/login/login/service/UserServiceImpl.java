@@ -30,12 +30,15 @@ public class UserServiceImpl implements UserService {
 			if(userr==null){
 				return userRepo.save(user);
 			}
-			else{
-				logger.error("Exceprtion occured: User already exists" );
+			else{				
 				throw new UserAlreadyExist("User already exists");
 			}
 		}
-		catch (LoanServiceException e) {
+		catch(UserAlreadyExist e){
+			logger.error("Exceprtion occured: User already exists" );
+			throw e;
+		}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -52,11 +55,15 @@ public class UserServiceImpl implements UserService {
 				userobj=optional.get();
 			}
 			else{
-				logger.error("Exceprtion occured: User Not Found" );
+			
 				throw new UserNotFound("User Not Found");
 			}
 		}
-		catch (LoanServiceException e) {
+		catch(UserNotFound e){
+			logger.error("Exceprtion occured: User Not Found" );
+			throw e;
+		}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -79,11 +86,14 @@ public class UserServiceImpl implements UserService {
 				userobj = userRepo.save(userobj);
 			}
 			else{
-				logger.error("Exceprtion occured: User Not Found" );
 				throw new UserNotFound("User Not Found");
 			}
 		}
-		catch (LoanServiceException e) {
+		catch(UserNotFound e){
+			logger.error("Exceprtion occured: User Not Found" );
+			throw e;
+		}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}

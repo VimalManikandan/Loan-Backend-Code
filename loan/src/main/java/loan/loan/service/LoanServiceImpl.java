@@ -26,7 +26,7 @@ public class LoanServiceImpl implements LoanService {
 	public Loan addLoan(Loan loan) {
 		try {
 			return loanRepo.save(loan);
-		} catch (LoanServiceException e) {
+		} catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -40,11 +40,15 @@ public class LoanServiceImpl implements LoanService {
 				loanObj=optional.get();
 			}
 			else{
-				logger.error("Exceprtion occured: Loan Not found" );
+				
 				throw new LoanNotFound("Loan Not found");
 			}
 		}
-		catch (LoanServiceException e) {
+		catch(LoanNotFound e){
+			logger.error("Exceprtion occured: Loan Not found" );
+			throw e;
+		}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -69,10 +73,14 @@ public class LoanServiceImpl implements LoanService {
 				loanObj = loanRepo.save(loanObj);
 			}
 			else{
-				logger.error("Exceprtion occured: Loan Not found" );
 				throw new LoanNotFound("Loan Not found");
 			}
-		}catch (LoanServiceException e) {
+		}
+		catch(LoanNotFound e){
+				logger.error("Exceprtion occured: Loan Not found" );
+				throw e;
+			}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -97,11 +105,14 @@ public class LoanServiceImpl implements LoanService {
 		try{
 			loans=loanRepo.findAll();
 			if(loans.isEmpty()){
-				logger.error("Exceprtion occured: Loan Not found" );
 				throw new LoanNotFound("Loan Not found");
 			}
 		}
-		catch(LoanServiceException e){
+		catch(LoanNotFound e){
+			logger.error("Exceprtion occured: Loan Not found" );
+			throw e;
+		}
+		catch(Exception e){
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}

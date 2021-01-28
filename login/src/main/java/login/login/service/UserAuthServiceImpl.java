@@ -26,8 +26,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 		try {			
 			logger.info("Inside LoginUser");
 			User u11 = userRepo.findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
-			if (u11 == null){
-				logger.error("Exceprtion occured: User Not Found" );
+			if (u11 == null){				
 				throw new UserNotFound("User Not Found");
 			}
 			else {
@@ -36,7 +35,11 @@ public class UserAuthServiceImpl implements UserAuthService {
 				return true;
 			}
 		} 
-		catch (LoanServiceException e) {
+		catch(UserNotFound e ){
+			logger.error("Exceprtion occured: User Not Found" );
+			throw e;
+		}
+		catch (Exception e) {
 			logger.error("Exceprtion occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
@@ -48,8 +51,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 		try {
 			logger.info("Inside logoutUser");
 			User u1 = userRepo.findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());
-			if (u1 == null){
-				logger.error("Exceprtion occured: User Not Found" );
+			if (u1 == null){				
 				throw new UserNotFound("User Not Found");
 			}
 			else {
@@ -58,6 +60,10 @@ public class UserAuthServiceImpl implements UserAuthService {
 				return true;
 			}
 
+		}
+		catch(UserNotFound e ){
+			logger.error("Exceprtion occured: User Not Found" );
+			throw e;
 		}
 		catch (LoanServiceException e ) {
 			logger.error("Exceprtion occured: LoanServiceException" );
