@@ -8,9 +8,9 @@ import loan.loan.model.Loan;
 public interface LoanService {
 	
 	public Loan addLoan(Loan loan);
-	public Loan getLoan(int id) throws LoanNotFound;
-	public List<Loan> getAllLoans() throws LoanNotFound;
-	public Loan updateLoan(Loan loan) throws LoanNotFound;
-	public boolean deleteLoan(int id) throws LoanNotFound;
+	public Loan getLoan(int id) ;
+	public List<Loan> getAllLoans() ;
+	public Loan updateLoan(Loan loan);
+	public boolean deleteLoan(int id);
 
 }

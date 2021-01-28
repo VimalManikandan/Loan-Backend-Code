@@ -1,12 +1,10 @@
 package login.login.exception;
 
-
-
-public class UserNotFound extends RuntimeException {
+public class LoanServiceException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public UserNotFound(String message) {
+	public LoanServiceException(String message) {
 		super(message);
 	}
 

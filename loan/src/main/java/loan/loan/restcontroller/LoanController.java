@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +33,7 @@ import loan.loan.datamodel.GenericResponce;
 
 @RestController
 @RequestMapping("/loanApi")
+@Validated
 public class LoanController {
 
 	public static Logger logger = LoggerFactory.getLogger(LoanController.class);
@@ -40,10 +45,9 @@ public class LoanController {
 	LoanService loanService;
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	public ResponseEntity<Loan> createLoan(@RequestBody Loan loan) throws Exception  {
+	public ResponseEntity<Loan> createLoan(@Valid @RequestBody Loan loan) {
 		Loan loanObj = null;
-		UserD user = loginClient.getLogin(loan.getUser().getUserid());
-		try {
+		UserD user = loginClient.getLogin(loan.getUser().getUserid());		
 			if (user == null) {
 				throw new UserNotFound("User Not Found");
 			} else if (user.getUsertype().equals("ADMIN") && user.isLoggedin()) {
@@ -51,25 +55,14 @@ public class LoanController {
 			} else {
 				throw new UserUnAuthorized("User Un Authorized");
 			}
-		} catch (UserNotFound e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (UserUnAuthorized e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		}
 		return new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/getLoan/{loanId}", method = RequestMethod.GET)
-	public ResponseEntity<Loan> getLoan(@PathVariable int loanId, @RequestParam int userId) throws Exception {
+	public ResponseEntity<Loan> getLoan(@PathVariable int loanId, @RequestParam int userId)  {
 		Loan loanObj = null;
 		UserD user = loginClient.getLogin(userId);
-		try {
 			if (user == null) {
 				throw new UserNotFound("User Not Found");
 			} else if (user.isLoggedin()) {
@@ -77,22 +70,15 @@ public class LoanController {
 			} else {
 				throw new UserUnAuthorized("User Un Authorized");
 			}
-		} catch (UserNotFound e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		}
+
 		return new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/updateLoan", method = RequestMethod.PUT)
-	public ResponseEntity<Loan> updateLoan(@RequestBody Loan loan) throws Exception {
+	public ResponseEntity<Loan> updateLoan(@Valid @RequestBody Loan loan) {
 		Loan loanObj = null;
 		UserD user = loginClient.getLogin(loan.getUser().getUserid());
-		try {
 			if (user == null) {
 				throw new UserNotFound("User Not Found");
 
@@ -101,24 +87,14 @@ public class LoanController {
 			} else {
 				throw new UserUnAuthorized("User Un Authorized");
 			}
-		} catch (UserNotFound e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (UserUnAuthorized e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		}
+
 		return  new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/deleteLoan/{loanId}", method = RequestMethod.DELETE)
-	public  ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam int userId)throws Exception {
+	public  ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam  @NotNull int userId) {
 		GenericResponce responce=new GenericResponce();
 		UserD user = loginClient.getLogin(userId);
-		try {
 			if (user == null) {
 				throw new UserNotFound("User Not Found");
 
@@ -135,16 +111,6 @@ public class LoanController {
 			} else {
 				throw new UserUnAuthorized("User Un Authorized");
 			}
-		} catch (UserNotFound e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (UserUnAuthorized e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		} catch (Exception e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		}
 		
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);
 	}
@@ -152,10 +118,9 @@ public class LoanController {
 	@RequestMapping(value = "/searchLoan", method = RequestMethod.GET)
 	public ResponseEntity<List<Loan>>searchLoan(@RequestParam(value = "loanNo", required = false) String loanNo,
 			@RequestParam(value = "fName", required = false) String fName,
-			@RequestParam(value = "lName", required = false) String lName)throws Exception {
+			@RequestParam(value = "lName", required = false) String lName) {
 		List<Loan> loanList = new ArrayList<>();
 		List<Loan> resultList = new ArrayList<>();		
-		try {
 			int lnNo=loanNo.isEmpty()?0:Integer.parseInt(loanNo);
 			loanList = loanService.getAllLoans();
 			if (loanList == null || loanList.isEmpty()) {
@@ -165,10 +130,6 @@ public class LoanController {
 						  &&(fName.isEmpty() ? true : loan.getFname().equalsIgnoreCase(fName))
 						  &&(lName.isEmpty() ? true : loan.getLname().equalsIgnoreCase(lName)))) .collect(Collectors.toList());
 			}
-		} catch (Exception e) {
-			logger.error("Exception occured:" + e);
-			throw e;
-		}
 		
 		return new ResponseEntity<List<Loan>>(resultList,HttpStatus.OK);
 	}

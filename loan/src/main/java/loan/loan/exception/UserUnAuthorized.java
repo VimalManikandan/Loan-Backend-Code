@@ -2,7 +2,7 @@ package loan.loan.exception;
 
 
 
-public class UserUnAuthorized extends Exception {
+public class UserUnAuthorized extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

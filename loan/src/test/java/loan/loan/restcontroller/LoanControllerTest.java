@@ -73,8 +73,8 @@ public class LoanControllerTest {
 	public void testCreateLoan() throws Exception {
 		when(loanService.addLoan(loan)).thenReturn(loan);
 		when(loginClient.getLogin(user.getUid())).thenReturn(user);
-		/*mockMvc.perform(post("/loanApi/create").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
-				.andExpect(status().isOk());*/
+		mockMvc.perform(post("/loanApi/create").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
+				.andExpect(status().isOk());
 	}
 
 	@Test

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,12 +28,15 @@ public class User {
 			@Column(name="userid")
 			private int userid;
 			
+			@NotNull(message="UserName Can't be null")
 			@Column(name="username")
 		    private String 	username ;
 			
+			@NotNull(message="Password Can't be null")
 			@Column(name="userpwd")
 			private String userpwd ;
 			
+			@NotNull(message="UserType Can't be null")
 			@Column(name="usertype")
 			private String usertype;	
 			
@@ -111,6 +115,30 @@ public class User {
 
 			public void setLoggedin(boolean loggedin) {
 				this.loggedin = loggedin;
+			}
+
+			
+			
+			@Override
+			public int hashCode() {
+				final int prime = 31;
+				int result = 1;
+				result = prime * result + userid;
+				return result;
+			}
+
+			@Override
+			public boolean equals(Object obj) {
+				if (this == obj)
+					return true;
+				if (obj == null)
+					return false;
+				if (getClass() != obj.getClass())
+					return false;
+				User other = (User) obj;
+				if (userid != other.userid)
+					return false;
+				return true;
 			}
 
 			@Override

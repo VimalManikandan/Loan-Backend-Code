@@ -9,8 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,9 +22,15 @@ public class Loan {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int loanno; 
 	
+	@NotNull(message="Name can't be null")
 	private String fname ;
+	
+	@NotNull(message="Name can't be null")
 	private String lname ;
 	private String paddress;
+	
+	@NotNull(message="Loan amount can't be null")
+	@Min(value=0, message="Loan Amount can't be negative")
 	private int loanAmount;
 	private String loantype;
 	private int loanterm;
@@ -116,6 +122,27 @@ public class Loan {
 		this.user = user;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + loanno;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Loan other = (Loan) obj;
+		if (loanno != other.loanno)
+			return false;
+		return true;
+	}
 
 	@Override
 	public String toString() {
