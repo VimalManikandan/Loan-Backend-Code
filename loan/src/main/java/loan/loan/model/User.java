@@ -53,7 +53,7 @@ public class User {
 
 			}
 
-			public User(int userid, String username, String userpwd, String usertype, boolean loggedin,List<Loan> loans) {
+			public User(int userid, String username, String userpwd, String usertype, boolean loggedin) {
 				super();
 				this.userid = userid;
 				this.username = username;
