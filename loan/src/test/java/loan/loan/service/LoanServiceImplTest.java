@@ -71,6 +71,12 @@ public class LoanServiceImplTest {
 		loanServiceImpl.addLoan(loan);
 		verify(loanServiceImpl, times(1)).addLoan(loan);
 	}
+	
+	@Test(expected = LoanServiceException.class)
+	public void testAddLoanException()  {
+		when(loanRepo.save(loan)).thenThrow(LoanServiceException.class);
+		Loan l1 = loanServiceImpl.addLoan(loan);
+	}
 
 	@Test
 	public void testGetLoanSuccess() throws LoanNotFound {

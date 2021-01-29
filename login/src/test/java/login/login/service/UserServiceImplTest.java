@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import login.login.exception.LoanServiceException;
 import login.login.exception.UserAlreadyExist;
 import login.login.exception.UserNotFound;
 import login.login.model.User;
@@ -66,6 +67,12 @@ public class UserServiceImplTest {
 		User u1=serviceImpl.registerUser(user);
 		assertNull(u1);
 		verify(userRepo,times(1)).save(u1);
+	}
+	
+	@Test(expected = LoanServiceException.class)
+	public void testRegisterUserException() throws UserNotFound {
+		when(userRepo.save(user)).thenThrow(LoanServiceException.class);
+		serviceImpl.registerUser(user);
 	}
 
 	@Test
