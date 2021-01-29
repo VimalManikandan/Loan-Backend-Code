@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,17 +23,22 @@ public class Loan {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int loanno; 
 	
-	@NotNull(message="Name can't be null")
+	@NotBlank(message="Name can't be blank")
 	private String fname ;
 	
-	@NotNull(message="Name can't be null")
+	@NotBlank(message="Name can't be blank")
 	private String lname ;
 	private String paddress;
 	
-	@NotNull(message="Loan amount can't be null")
+	@NotNull(message="Loan amount can't be blank")
 	@Min(value=0, message="Loan Amount can't be negative")
 	private int loanAmount;
+	
+	@NotBlank(message="Loan Type can't be blank")
 	private String loantype;
+	
+	@NotNull(message="Loan amount can't be blank")
+	@Min(value=0, message="Loan term can't be negative")
 	private int loanterm;
 	
 	@ManyToOne(cascade={

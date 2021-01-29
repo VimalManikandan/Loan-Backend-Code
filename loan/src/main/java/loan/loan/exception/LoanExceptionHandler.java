@@ -11,7 +11,7 @@ import loan.loan.datamodel.GenericResponce;
 public class LoanExceptionHandler {
 	
 	
-	@ExceptionHandler(value = Exception.class)
+	@ExceptionHandler(value = LoanServiceException.class)
 	public ResponseEntity<GenericResponce> handleException(Exception e) {
 
 		GenericResponce responce = new GenericResponce();

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,15 +29,15 @@ public class User {
 			@Column(name="userid")
 			private int userid;
 			
-			@NotNull(message="UserName Can't be null")
+			@NotBlank(message="UserName Can't be blank")
 			@Column(name="username")
 		    private String 	username ;
 			
-			@NotNull(message="Password Can't be null")
+			@NotBlank(message="Password Can't be blank")
 			@Column(name="userpwd")
 			private String userpwd ;
 			
-			@NotNull(message="UserType Can't be null")
+			@NotBlank(message="UserType Can't be blank")
 			@Column(name="usertype")
 			private String usertype;	
 			
