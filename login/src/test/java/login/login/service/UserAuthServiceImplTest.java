@@ -38,7 +38,7 @@ public class UserAuthServiceImplTest {
 	@Before
 	public void setUp() throws Exception {
 		closeable = MockitoAnnotations.openMocks(this);
-		user= new User(1, "USet", "123Password", "USER", false);	
+		user= new User(1, "USet", "123Password", "USER", "xyz");	
 		
 	}
 	

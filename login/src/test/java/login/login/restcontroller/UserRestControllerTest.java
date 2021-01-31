@@ -52,7 +52,7 @@ public class UserRestControllerTest {
 	public void setUp() {
 		closeable = MockitoAnnotations.openMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(userRestController).build();
-		user = new User(1, "USet", "123Password", "USER", false);
+		user = new User(1, "USet", "123Password", "USER", "xyz");
 	}
 
 	@Test
@@ -85,8 +85,8 @@ public class UserRestControllerTest {
 
 	@Test
 	public void testUserObject() throws Exception {
-		User user1=new User(1, "Vimal", "test", "Admin", true);
-		User user2=new User(1, "Vimal", "test", "Admin", true);
+		User user1=new User(1, "Vimal", "test", "Admin", "abc");
+		User user2=new User(1, "Vimal", "test", "Admin", "xyz");
 		assertEquals(user1, user2);
 		assertTrue( user1.hashCode()==user1.hashCode() );
 	}

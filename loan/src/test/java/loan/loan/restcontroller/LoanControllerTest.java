@@ -99,13 +99,13 @@ public class LoanControllerTest {
 
 	@Test
 	public void testUserObject() throws Exception {
-		User user1=new User(1, "Vimal", "test", "Admin", true);
+		User user1=new User(1, "Vimal", "test", "Admin", "abc");
 		User user2=new User();
 		user2.setUserid(1);
 		user2.setUsername("Vimal");
 		user2.setUserpwd("test");
 		user2.setUsertype("Admin");
-		user2.setLoggedin(true);
+		user2.setJwtToken("ABC");
 		assertEquals(user1, user2);
 		assertTrue( user1.hashCode()==user1.hashCode() );
 

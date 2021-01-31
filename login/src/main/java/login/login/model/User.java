@@ -37,13 +37,12 @@ public class User {
 			@Column(name="userpwd")
 			private String userpwd ;
 			
-			@NotBlank(message="UserType Can't be blank")
 			@Column(name="usertype")
 			private String usertype;	
 			
 
-			@Column(name="loggedin")
-			private boolean loggedin;
+			@Column(name="token")
+			private String jwtToken;
 					
 			@JsonIgnore
 			@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade= { CascadeType.MERGE,
@@ -56,14 +55,14 @@ public class User {
 
 			}
 
-			public User(int userid, String username, String userpwd, String usertype, boolean loggedin
+			public User(int userid, String username, String userpwd, String usertype, String jwtToken
 				) {
 				super();
 				this.userid = userid;
 				this.username = username;
 				this.userpwd = userpwd;
 				this.usertype = usertype;
-				this.loggedin=loggedin;
+				this.jwtToken=jwtToken;
 			}		
 
 			public int getUserid() {
@@ -107,19 +106,15 @@ public class User {
 			public void setUsertype(String usertype) {
 				this.usertype = usertype;
 			}
-			
-			
-
-			public boolean isLoggedin() {
-				return loggedin;
+						
+			public String getJwtToken() {
+				return jwtToken;
 			}
 
-			public void setLoggedin(boolean loggedin) {
-				this.loggedin = loggedin;
+			public void setJwtToken(String jwtToken) {
+				this.jwtToken = jwtToken;
 			}
 
-			
-			
 			@Override
 			public int hashCode() {
 				final int prime = 31;

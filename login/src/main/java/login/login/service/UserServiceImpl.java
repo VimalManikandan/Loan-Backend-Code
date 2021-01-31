@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
 		try {
 			if (optional.isPresent()) {
 				userobj = optional.get();
-				userobj.setLoggedin(user.isLoggedin());
+				userobj.setJwtToken(user.getJwtToken());
 				userobj.setUserid(user.getUserid());
 				userobj.setUsername(user.getUsername());
 				userobj.setUserpwd(user.getUserpwd());

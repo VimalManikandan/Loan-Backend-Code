@@ -53,7 +53,7 @@ public class UserAuthControllerTest {
 	public void setUp(){
 		closeable = MockitoAnnotations.openMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(userAuthControleller).build();
-		user= new User(1, "USet", "123Password", "USER", false);		
+		user= new User(1, "USet", "123Password", "USER", "xyz");		
 	}
 
 	

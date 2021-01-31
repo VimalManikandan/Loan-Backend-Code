@@ -7,7 +7,7 @@ public class UserD {
 	private String username;
 	private String userpwd;
 	private String usertype;
-	private boolean loggedin;
+	private String jwtToken;
 
 	public UserD() {
 		super();
@@ -54,12 +54,12 @@ public class UserD {
 		this.usertype = usertype;
 	}
 
-	public boolean isLoggedin() {
-		return loggedin;
+	public String getJwtToken() {
+		return jwtToken;
 	}
 
-	public void setLoggedin(boolean loggedin) {
-		this.loggedin = loggedin;
+	public void setJwtToken(String jwtToken) {
+		this.jwtToken = jwtToken;
 	}
 
 	@Override

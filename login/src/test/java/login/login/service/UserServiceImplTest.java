@@ -46,7 +46,7 @@ public class UserServiceImplTest {
 	@Before
 	public void setUp()  {
 		closeable = MockitoAnnotations.openMocks(this);
-		user= new User(1, "USet", "123Password", "USER", false);		
+		user= new User(1, "USet", "123Password", "USER", "xyzs");		
 		optionaluser=Optional.of(user);		
 		optionalNulluser = Optional.ofNullable(null);
 		

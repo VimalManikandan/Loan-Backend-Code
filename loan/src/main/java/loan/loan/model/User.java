@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 @Entity
@@ -35,31 +37,32 @@ public class User {
 			@Column(name="userpwd")
 			private String userpwd ;
 			
-			@NotBlank(message="UserType Can't be blank")
 			@Column(name="usertype")
 			private String usertype;	
 			
 
-			@Column(name="loggedin")
-			private boolean loggedin;
-
-			@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade= { 
+			@Column(name="token")
+			private String jwtToken;
+					
+			@JsonIgnore
+			@OneToMany(mappedBy = "user",fetch = FetchType.LAZY,cascade= { CascadeType.MERGE,
 						 CascadeType.DETACH, CascadeType.REFRESH})
 			private List<Loan> loans;
-			
+						
 			
 			public User() {
 				super();
 
 			}
 
-			public User(int userid, String username, String userpwd, String usertype, boolean loggedin) {
+			public User(int userid, String username, String userpwd, String usertype, String jwtToken
+				) {
 				super();
 				this.userid = userid;
 				this.username = username;
 				this.userpwd = userpwd;
 				this.usertype = usertype;
-				this.loggedin=loggedin;
+				this.jwtToken=jwtToken;
 			}		
 
 			public int getUserid() {
@@ -68,6 +71,14 @@ public class User {
 
 			public void setUserid(int userid) {
 				this.userid = userid;
+			}
+
+			public List<Loan> getLoans() {
+				return loans;
+			}
+
+			public void setLoans(List<Loan> loans) {
+				this.loans = loans;
 			}
 
 			public String getUsername() {
@@ -95,18 +106,15 @@ public class User {
 			public void setUsertype(String usertype) {
 				this.usertype = usertype;
 			}
-			
-			
-
-			public boolean isLoggedin() {
-				return loggedin;
+						
+			public String getJwtToken() {
+				return jwtToken;
 			}
 
-			public void setLoggedin(boolean loggedin) {
-				this.loggedin = loggedin;
+			public void setJwtToken(String jwtToken) {
+				this.jwtToken = jwtToken;
 			}
 
-			
 			@Override
 			public int hashCode() {
 				final int prime = 31;

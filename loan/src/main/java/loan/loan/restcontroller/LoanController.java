@@ -2,7 +2,6 @@ package loan.loan.restcontroller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -26,8 +25,10 @@ import loan.loan.exception.LoanNotFound;
 import loan.loan.exception.UserNotFound;
 import loan.loan.exception.UserUnAuthorized;
 import loan.loan.model.Loan;
+import loan.loan.model.MyUserDetails;
 import loan.loan.model.User;
 import loan.loan.restclient.LoginClient;
+import loan.loan.security.JwtUtil;
 import loan.loan.service.LoanService;
 import loan.loan.datamodel.GenericResponce;
 
@@ -44,94 +45,61 @@ public class LoanController {
 	@Autowired
 	LoanService loanService;
 
+	@Autowired
+	JwtUtil jwtUtil;
+
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
 	public ResponseEntity<Loan> createLoan(@Valid @RequestBody Loan loan) {
-		Loan loanObj = null;
-		UserD user = loginClient.getLogin(loan.getUser().getUserid());		
-			if (user == null) {
-				throw new UserNotFound("User Not Found");
-			} else if (user.getUsertype().equals("ADMIN") && user.isLoggedin()) {
-				loanObj = loanService.addLoan(loan);
-			} else {
-				throw new UserUnAuthorized("User Un Authorized");
-			}
-		return new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
+		Loan	loanObj = loanService.addLoan(loan);
+		return new ResponseEntity<Loan>(loanObj, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/getLoan/{loanId}", method = RequestMethod.GET)
-	public ResponseEntity<Loan> getLoan(@PathVariable int loanId, @RequestParam int userId)  {
-		Loan loanObj = null;
-		UserD user = loginClient.getLogin(userId);
-			if (user == null) {
-				throw new UserNotFound("User Not Found");
-			} else if (user.isLoggedin()) {
-				loanObj = loanService.getLoan(loanId);
-			} else {
-				throw new UserUnAuthorized("User Un Authorized");
-			}
-
-		return new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
+	public ResponseEntity<Loan> getLoan(@PathVariable int loanId, @RequestParam int userId) {
+		Loan loanObj = loanService.getLoan(loanId);
+		return new ResponseEntity<Loan>(loanObj, HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/updateLoan", method = RequestMethod.PUT)
 	public ResponseEntity<Loan> updateLoan(@Valid @RequestBody Loan loan) {
-		Loan loanObj = null;
-		UserD user = loginClient.getLogin(loan.getUser().getUserid());
-			if (user == null) {
-				throw new UserNotFound("User Not Found");
-
-			} else if (user.getUsertype().equals("ADMIN") && user.isLoggedin()) {
-				loanObj = loanService.updateLoan(loan);
-			} else {
-				throw new UserUnAuthorized("User Un Authorized");
-			}
-
-		return  new ResponseEntity<Loan>(loanObj,HttpStatus.OK);
+		Loan loanObj = loanService.updateLoan(loan);
+		return new ResponseEntity<Loan>(loanObj, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/deleteLoan/{loanId}", method = RequestMethod.DELETE)
-	public  ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam  @NotNull int userId) {
-		GenericResponce responce=new GenericResponce();
-		UserD user = loginClient.getLogin(userId);
-			if (user == null) {
-				throw new UserNotFound("User Not Found");
-
-			} else if (user.getUsertype().equals("ADMIN") && user.isLoggedin()) {
-				if( loanService.deleteLoan(loanId)){
-					responce.setStatus(HttpStatus.OK.value());
-					responce.setMessage("SUCCESS");
-				}
-				else{
-					responce.setStatus(HttpStatus.NOT_FOUND.value());
-					responce.setMessage("FAILED");
-				}
-				
+	public ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam @NotNull int userId) {
+		GenericResponce responce = new GenericResponce();
+			if (loanService.deleteLoan(loanId)) {
+				responce.setStatus(HttpStatus.OK.value());
+				responce.setMessage("SUCCESS");
 			} else {
-				throw new UserUnAuthorized("User Un Authorized");
+				responce.setStatus(HttpStatus.NOT_FOUND.value());
+				responce.setMessage("FAILED");
 			}
-		
+
 		return new ResponseEntity<GenericResponce>(responce, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/searchLoan", method = RequestMethod.GET)
-	public ResponseEntity<List<Loan>>searchLoan(@RequestParam(value = "loanNo", required = false) String loanNo,
+	public ResponseEntity<List<Loan>> searchLoan(@RequestParam(value = "loanNo", required = false) String loanNo,
 			@RequestParam(value = "fName", required = false) String fName,
 			@RequestParam(value = "lName", required = false) String lName) {
 		List<Loan> loanList = new ArrayList<>();
-		List<Loan> resultList = new ArrayList<>();		
-			int lnNo=loanNo.isEmpty()?0:Integer.parseInt(loanNo);
-			loanList = loanService.getAllLoans();
-			if (loanList == null || loanList.isEmpty()) {
-				throw new LoanNotFound("Loan Not Found");
-			} else {
-				resultList=	loanList.stream().filter(loan ->((lnNo != 0 ? loan.getLoanno() == lnNo : true)
-						  &&(fName.isEmpty() ? true : loan.getFname().equalsIgnoreCase(fName))
-						  &&(lName.isEmpty() ? true : loan.getLname().equalsIgnoreCase(lName)))) .collect(Collectors.toList());
-			}
-		
-		return new ResponseEntity<List<Loan>>(resultList,HttpStatus.OK);
+		List<Loan> resultList = new ArrayList<>();
+		int lnNo = loanNo.isEmpty() ? 0 : Integer.parseInt(loanNo);
+		loanList = loanService.getAllLoans();
+		if (loanList == null || loanList.isEmpty()) {
+			throw new LoanNotFound("Loan Not Found");
+		} else {
+			resultList = loanList.stream()
+					.filter(loan -> ((lnNo != 0 ? loan.getLoanno() == lnNo : true)
+							&& (fName.isEmpty() ? true : loan.getFname().equalsIgnoreCase(fName))
+							&& (lName.isEmpty() ? true : loan.getLname().equalsIgnoreCase(lName))))
+					.collect(Collectors.toList());
+		}
+		return new ResponseEntity<List<Loan>>(resultList, HttpStatus.OK);
 	}
 
 }
