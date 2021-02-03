@@ -37,7 +37,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 	UserService userService;
 
 	@Override
-	public boolean loginUser(User user) {
+	public User loginUser(User user) {
 		try {
 			logger.info("Inside LoginUser");
 			authenticationManger
@@ -48,7 +48,7 @@ public class UserAuthServiceImpl implements UserAuthService {
 			User u11 = userRepo.findByUsernameAndUserpwd(user.getUsername(), user.getUserpwd());	
 			u11.setJwtToken(jwt);
 			userService.updateUser(u11);
-			return true;
+			return u11;
 			
 		} catch (UserNotFound e) {
 			logger.error("Exceprtion occured: User Not Found");

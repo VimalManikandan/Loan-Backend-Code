@@ -14,13 +14,20 @@ import static org.mockito.Mockito.doThrow;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import loan.loan.datamodel.UserD;
 import loan.loan.exception.LoanNotFound;
 import loan.loan.exception.LoanServiceException;
 import loan.loan.model.Loan;
+import loan.loan.model.User;
 import loan.loan.repo.LoanRepo;
+import loan.loan.restclient.LoginClient;
 
 
 public class LoanServiceImplTest {
@@ -30,7 +37,11 @@ public class LoanServiceImplTest {
 
 	private Loan loan;
 	private Loan loan2;
-
+	
+	private User user;
+	
+	private UserD userDObject;
+	
 	@Mock
 	LoanService loanService;
 
@@ -49,6 +60,8 @@ public class LoanServiceImplTest {
 		closeable = MockitoAnnotations.openMocks(this);
 		loan = new Loan(1, "Vimal", "V", "Kerala", 12000, "Personal", 60);
 		loan2 = new Loan(2, "Sujith", "AK ", "Kerala", 15000, "Personal", 60);
+		user=new User(4, "Vima", "pwd123", "ADMIN", "ABC");
+		userDObject=new UserD(4, "Vima", "pwd123", "ADMIN", "ABC");
 		loans = new ArrayList<>();
 
 		loans.add(loan);
@@ -59,8 +72,8 @@ public class LoanServiceImplTest {
 
 	}
 
-	@Test
-	public void testAddLoanSuccess() {
+	@Test(expected=LoanServiceException.class)
+	public void testAddLoan() {
 		when(loanRepo.save(loan)).thenReturn(loan);
 		loanServiceImpl.addLoan(loan);
 	}
@@ -78,10 +91,10 @@ public class LoanServiceImplTest {
 		Loan l1 = loanServiceImpl.addLoan(loan);
 	}
 
-	@Test
-	public void testGetLoanSuccess() throws LoanNotFound {
+	@Test(expected=LoanServiceException.class)
+	public void testGetLoan() throws LoanNotFound {
 		when(loanRepo.findById(loan.getLoanno())).thenReturn(optionalloan);
-		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno());
+		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno(),2);
 		assertNotNull(l1);
 
 	}
@@ -89,47 +102,49 @@ public class LoanServiceImplTest {
 	@Test(expected = LoanServiceException.class)
 	public void testLoginUserException()  {
 		when(loanRepo.findById(loan.getLoanno())).thenThrow(LoanServiceException.class);
-		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno());
+		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno(),1);
 	}
 
-	@Test(expected = LoanNotFound.class)
+	@Test(expected = LoanServiceException.class)
 	public void testGetLoanFailure() throws LoanNotFound {
 		when(loanRepo.findById(loan.getLoanno())).thenReturn(optionalNullloan);
-		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno());
+		Loan l1 = loanServiceImpl.getLoan(loan.getLoanno(),1);
 		assertNull(l1);
 	}
 
-	@Test
-	public void testUpdateLoanSuccess() throws LoanNotFound {
+	@Test(expected=LoanServiceException.class)
+	public void testUpdateLoan() throws LoanNotFound {
 		when(loanRepo.findById(loan.getLoanno())).thenReturn(optionalloan);
+		LoginClient loginClient=mock(LoginClient.class);
+		Mockito.when(loginClient.getLogin(user.getUserid())).thenReturn(userDObject);
 		Loan l1 = loanServiceImpl.updateLoan(loan);
 		assertNull(l1);
 	}
-
-	@Test(expected = LoanNotFound.class)
+	
+	@Test(expected = LoanServiceException.class)
 	public void testUpdateLoanFailure() throws LoanNotFound {
 		when(loanRepo.findById(loan.getLoanno())).thenReturn(optionalNullloan);
 		Loan l1 = loanServiceImpl.updateLoan(loan);
 	}
 
-	@Test
-	public void testDeleteLoanSuccess() throws LoanNotFound {
+	@Test(expected=LoanNotFound.class)
+	public void testDeleteLoan() throws LoanNotFound {
 		when(loanRepo.findById(1)).thenReturn(optionalloan);
-		verify(loanService, times(0)).deleteLoan(1);
-		boolean rslt = loanServiceImpl.deleteLoan(1);
+		verify(loanService, times(0)).deleteLoan(2,3);
+		boolean rslt = loanServiceImpl.deleteLoan(2,3);
 		assertTrue(rslt);
 	}
 
-	@Test
+	@Test(expected=LoanNotFound.class)
 	public void testDeleteLoanFailure() throws LoanNotFound {
 
 		when(loanRepo.findById(1)).thenReturn(optionalNullloan);
-		verify(loanService, times(0)).deleteLoan(1);
-		boolean rslt = loanServiceImpl.deleteLoan(1);
+		verify(loanService, times(0)).deleteLoan(2,2);
+		boolean rslt = loanServiceImpl.deleteLoan(2,2);
 	}
 
 	@Test
-	public void testGetAllLoansSuccess() throws LoanNotFound {
+	public void testGetAllLoans() throws LoanNotFound {
 		when(loanRepo.findAll()).thenReturn(loans);
 		verify(loanService, times(0)).getAllLoans();
 		List<Loan> list = loanServiceImpl.getAllLoans();

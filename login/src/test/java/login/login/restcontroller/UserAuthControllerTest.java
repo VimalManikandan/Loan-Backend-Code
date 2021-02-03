@@ -59,12 +59,10 @@ public class UserAuthControllerTest {
 	
 	@Test
 	public void testLoginUserSuccess() throws Exception {
-		when(userAuthService.loginUser(user)).thenReturn(true);
-
+		when(userAuthService.loginUser(user)).thenReturn(user);
 		mockMvc.perform(post("/loginApi/login").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
 				.andExpect(status().isOk())
 		 		.andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-		 	//	.andExpect((MockMvcResultMatchers.jsonPath("$.status").value(404)))
 		 		.andDo(MockMvcResultHandlers.print());
 		
 		
@@ -72,29 +70,27 @@ public class UserAuthControllerTest {
 	
 	@Test
 	public void testLoginUserFailure() throws Exception {
-		when(userAuthService.loginUser(user)).thenReturn(false);
+		when(userAuthService.loginUser(user)).thenReturn(user);
 		mockMvc.perform(post("/loginApi/login").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
 				.andExpect(status().isOk())
 				 .andExpect(MockMvcResultMatchers.content().contentType("application/json"));
-				//	.andExpect((MockMvcResultMatchers.jsonPath("$.status").value(404)));
 	}
+
 
 	@Test
 	public void testLogoutUserSuccess() throws Exception {
 		when(userAuthService.logoutUser(user)).thenReturn(true);
-		mockMvc.perform(get("/loginApi/logout").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
+		mockMvc.perform(post("/loginApi/logout").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
 				.andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-		 		//.andExpect((MockMvcResultMatchers.jsonPath("$.status").value(404)))
 		 		.andDo(MockMvcResultHandlers.print());
 	}
 	@Test
 	public void testLogoutUserFailure() throws Exception {
 		when(userAuthService.logoutUser(user)).thenReturn(true);
-		mockMvc.perform(get("/loginApi/logout").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
+		mockMvc.perform(post("/loginApi/logout").contentType(MediaType.APPLICATION_JSON).content(asJsonString(user)))
 				.andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType("application/json"))
-		 		//.andExpect((MockMvcResultMatchers.jsonPath("$.status").value(404)))
 		 		.andDo(MockMvcResultHandlers.print());
 	}
 	

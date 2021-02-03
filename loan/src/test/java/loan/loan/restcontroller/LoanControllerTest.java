@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -47,7 +49,9 @@ public class LoanControllerTest {
 	private Loan loan;
 	private Loan loan2;
 
+	private GenericResponce responce;
 	private List<Loan> loans;
+	
 
 	private UserD user;
 
@@ -67,34 +71,66 @@ public class LoanControllerTest {
 		loan = new Loan(1, "Vimal", "V", "Palakkad", 125000, "Personal", 60);
 		loan2 = new Loan(2, "Sujith", "AK ", "Kerala", 15000, "Personal", 60);
 		loans = new ArrayList<>();
+		responce=new GenericResponce();
 		loans.add(loan);
 		loans.add(loan2);
-		user = new UserD(1, "USERadmin", "123Password", "ADMIN");
+		user = new UserD(1, "USERadmin", "123Password", "ADMIN","ABCD");
 	}
 
 	@Test
-	public void testCreateLoan() throws Exception {
+	public void testCreateLoanSuccess() throws Exception {
 		when(loanService.addLoan(loan)).thenReturn(loan);
+		when(loginClient.getLogin(user.getUid())).thenReturn(user);
+		mockMvc.perform(post("/loanApi/create").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
+				.andExpect(status().isOk());
+	}
+	@Test
+	public void testCreateLoanFailure() throws Exception {
+		when(loanService.addLoan(loan)).thenReturn(null);
 		when(loginClient.getLogin(user.getUid())).thenReturn(user);
 		mockMvc.perform(post("/loanApi/create").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
 				.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testGetLoan() throws Exception {
-		when(loanService.getLoan(loan.getLoanno())).thenReturn(loan);
-		mockMvc.perform(get("/loanApi/getLoan/{loanId}", loan.getLoanno())).andExpect(status().isBadRequest());
-		//get("/userApi/get/{id}",user.getUserid()))
+	public void testGetLoanSuccess() throws Exception {
+		when(loanService.getLoan(loan.getLoanno(),user.getUid())).thenReturn(loan);
+		mockMvc.perform(get("/loanApi/getLoan/{loanId}", loan.getLoanno()).param("userId", String.valueOf(user.getUid())))
+		.andExpect(status().isOk());
+	}
+	@Test
+	public void testGetLoanFailure() throws Exception {
+		when(loanService.getLoan(loan.getLoanno(),user.getUid())).thenReturn(loan);
+		mockMvc.perform(get("/loanApi/getLoan/{loanId}", loan.getLoanno()).param("userId", String.valueOf(user.getUid())))
+		.andExpect(status().isOk());
+	}
+	
+
+	@Test
+	public void testUpdateLoanSuccess() throws Exception {
+		when(loanService.updateLoan(loan)).thenReturn(loan);
+		mockMvc.perform(put("/loanApi/updateLoan").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void testUpdateLoanFailure() throws Exception {
+		when(loanService.updateLoan(loan)).thenReturn(loan);
+		mockMvc.perform(put("/loanApi/updateLoan").contentType(MediaType.APPLICATION_JSON).content(asJsonString(loan)))
+		.andExpect(status().isOk());
 	}
 
 	@Test
-	public void testUpdateLoan() {
-		//fail("Not yet implemented");
+	public void testDeleteLoanSuccess() throws Exception {
+		when(loanService.deleteLoan(loan.getLoanno(),user.getUid())).thenReturn(true);
+		mockMvc.perform(delete("/loanApi/deleteLoan/{loanId}", loan.getLoanno()).param("userId", String.valueOf(user.getUid())))
+		.andExpect(status().isOk());
 	}
-
 	@Test
-	public void testDeleteLoan() {
-	//("Not yet implemented");
+	public void testDeleteLoanFailure() throws Exception {
+		when(loanService.deleteLoan(loan.getLoanno(),user.getUid())).thenReturn(true);
+		mockMvc.perform(delete("/loanApi/deleteLoan/{loanId}", loan.getLoanno()).param("userId", String.valueOf(user.getUid())))
+		.andExpect(status().isOk());
 	}
 
 	@Test
@@ -154,7 +190,7 @@ public class LoanControllerTest {
 
 	@Test
 	public void testUserDObject() throws Exception {
-		UserD ud1=new UserD(1, "Vimal", "test", "Admin");
+		UserD ud1=new UserD(1, "Vimal", "test", "Admin","ABCD");
 		UserD ud2=new UserD();
 		ud2.setUid(ud1.getUid());
 		ud2.setUsername(ud1.getUsername());

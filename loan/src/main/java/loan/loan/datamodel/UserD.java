@@ -14,12 +14,13 @@ public class UserD {
 
 	}
 
-	public UserD(int uid, String username, String userpwd, String usertype) {
+	public UserD(int uid, String username, String userpwd, String usertype,String jwtToken) {
 		super();
 		this.uid = uid;
 		this.username = username;
 		this.userpwd = userpwd;
 		this.usertype = usertype;
+		this.jwtToken=jwtToken;
 	}
 
 	public int getUid() {

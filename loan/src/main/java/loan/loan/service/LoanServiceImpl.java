@@ -56,24 +56,24 @@ public class LoanServiceImpl implements LoanService {
 		}
 		}
 		catch(UserUnAuthorized e){
-			logger.error("Exceprtion occured: User Un Authorized" );
+			logger.error("Exception occured: User Un Authorized" );
 			throw e;
 		}
 		catch(UserNotFound e){
-			logger.error("Exceprtion occured: User Not Found" );
+			logger.error("Exception occured: User Not Found" );
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error("Exceprtion occured: LoanServiceException" );
+			logger.error("Exception occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
 		return loanObj;
 	}
 	@Override
-	public Loan getLoan(int id)  {
+	public Loan getLoan(int id, int userId)  {
 		Loan loanObj = null;
 		try {
-		UserD user = loginClient.getLogin(id);
+		UserD user = loginClient.getLogin(userId);
 		if (user == null) {
 			throw new UserNotFound("User Not Found");
 		}
@@ -96,18 +96,18 @@ public class LoanServiceImpl implements LoanService {
 		}
 		}
 		catch(UserUnAuthorized e){
-			logger.error("Exceprtion occured: User Un Authorized" );
+			logger.error("Exception occured: User Un Authorized" );
 			throw e;
 		}
 		catch(UserNotFound e){
-			logger.error("Exceprtion occured: User Not found" );
+			logger.error("Exception occured: User Not found" );
 		}
 		catch(LoanNotFound e){
-			logger.error("Exceprtion occured: Loan Not found" );
+			logger.error("Exception occured: Loan Not found" );
 			throw e;
 		}
 		catch (Exception e) {
-			logger.error("Exceprtion occured: LoanServiceException" );
+			logger.error("Exception occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
 		return loanObj;
@@ -148,29 +148,29 @@ public class LoanServiceImpl implements LoanService {
 		}
 		}
 		catch(UserUnAuthorized e){
-			logger.error("Exceprtion occured: User Un Authorized" );
+			logger.error("Exception occured: User Un Authorized" );
 			throw e;
 		}
 		catch(UserNotFound e){
-			logger.error("Exceprtion occured: User Not found" );
+			logger.error("Exception occured: User Not found" );
 		}
 		catch(LoanNotFound e){
-				logger.error("Exceprtion occured: Loan Not found" );
+				logger.error("Exception occured: Loan Not found" );
 				throw e;
 			}
 		catch (Exception e) {
-			logger.error("Exceprtion occured: LoanServiceException" );
+			logger.error("Exception occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
 		return loanObj;
 	}
 
 	@Override
-	public boolean deleteLoan(int id) {
+	public boolean deleteLoan(int id,int userId) {
 		boolean result =false;
 		
 		try {
-		UserD user = loginClient.getLogin(id);
+		UserD user = loginClient.getLogin(userId);
 		if (user == null) {
 			throw new UserNotFound("User Not Found");
 
@@ -189,15 +189,15 @@ public class LoanServiceImpl implements LoanService {
 		}
 		}
 		catch(UserUnAuthorized e){
-			logger.error("Exceprtion occured: User Un Authorized" );
+			logger.error("Exception occured: User Un Authorized" );
 			throw e;
 		}
 		catch(UserNotFound e){
-			logger.error("Exceprtion occured: User Not found" );
+			logger.error("Exception occured: User Not found" );
 		}
 		
 		catch (Exception e) {
-			logger.error("Exceprtion occured: Loan Not found" );
+			logger.error("Exception occured: Loan Not found" );
 			throw new LoanNotFound("Loan Not found");
 		}
 		return result;
@@ -213,13 +213,14 @@ public class LoanServiceImpl implements LoanService {
 			}
 		}
 		catch(LoanNotFound e){
-			logger.error("Exceprtion occured: Loan Not found" );
+			logger.error("Exception occured: Loan Not found" );
 			throw e;
 		}
 		catch(Exception e){
-			logger.error("Exceprtion occured: LoanServiceException" );
+			logger.error("Exception occured: LoanServiceException" );
 			throw new LoanServiceException("Something went wrong..!");
 		}
 		return loans;
 	}
+
 }

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,7 @@ import loan.loan.datamodel.GenericResponce;
 
 @RestController
 @RequestMapping("/loanApi")
+@CrossOrigin(origins = "http://localhost:4200")
 @Validated
 public class LoanController {
 
@@ -57,7 +59,7 @@ public class LoanController {
 
 	@RequestMapping(value = "/getLoan/{loanId}", method = RequestMethod.GET)
 	public ResponseEntity<Loan> getLoan(@PathVariable int loanId, @RequestParam int userId) {
-		Loan loanObj = loanService.getLoan(loanId);
+		Loan loanObj = loanService.getLoan(loanId,userId);
 		return new ResponseEntity<Loan>(loanObj, HttpStatus.OK);
 
 	}
@@ -71,7 +73,9 @@ public class LoanController {
 	@RequestMapping(value = "/deleteLoan/{loanId}", method = RequestMethod.DELETE)
 	public ResponseEntity<GenericResponce> deleteLoan(@PathVariable int loanId, @RequestParam @NotNull int userId) {
 		GenericResponce responce = new GenericResponce();
-			if (loanService.deleteLoan(loanId)) {
+			System.out.println("Loan No:"+loanId+"User Id:"+userId);
+		
+			if (loanService.deleteLoan(loanId,userId)) {
 				responce.setStatus(HttpStatus.OK.value());
 				responce.setMessage("SUCCESS");
 			} else {
@@ -88,17 +92,32 @@ public class LoanController {
 			@RequestParam(value = "lName", required = false) String lName) {
 		List<Loan> loanList = new ArrayList<>();
 		List<Loan> resultList = new ArrayList<>();
-		int lnNo = loanNo.isEmpty() ? 0 : Integer.parseInt(loanNo);
+		
+		System.out.println("lno->"+loanNo+"fanme->"+fName+"->"+lName);
+		
+		System.out.println("Loan NO:"+loanNo);
+		int lnNo=(loanNo==null || loanNo.equals("null"))?0:(loanNo.isEmpty()?0:Integer.parseInt(loanNo));
+		String fNnamee=(fName==null || fName.equals("null"))?"":fName;
+		String lNnamee=(lName==null || lName.equals("null"))?"":lName;
+		System.out.println("After Loan NO:"+lnNo);
+		
 		loanList = loanService.getAllLoans();
+		
+		System.out.println("Loan No:"+lnNo+"FName:"+fNnamee+"LName:"+lNnamee);
+		
 		if (loanList == null || loanList.isEmpty()) {
 			throw new LoanNotFound("Loan Not Found");
 		} else {
 			resultList = loanList.stream()
 					.filter(loan -> ((lnNo != 0 ? loan.getLoanno() == lnNo : true)
-							&& (fName.isEmpty() ? true : loan.getFname().equalsIgnoreCase(fName))
-							&& (lName.isEmpty() ? true : loan.getLname().equalsIgnoreCase(lName))))
+							&& (fNnamee.isEmpty() ? true : loan.getFname().equalsIgnoreCase(fNnamee))
+							&& (lNnamee.isEmpty() ? true : loan.getLname().equalsIgnoreCase(lNnamee))))
 					.collect(Collectors.toList());
 		}
+		
+		
+		System.out.println("ResultList:"+resultList);
+		
 		return new ResponseEntity<List<Loan>>(resultList, HttpStatus.OK);
 	}
 
